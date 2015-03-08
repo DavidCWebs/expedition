@@ -23,6 +23,84 @@
     'common': {
       init: function() {
         // JavaScript to be fired on all pages
+
+
+        // Responsive Menu
+
+	// prepend menu icon
+			$('#nav_wrap').prepend('<div id="menu_icon">Menu</div>');
+
+	// toggle nav
+			$("#menu_icon").on("click", function(){
+			//$('#menu-main-menu').toggle();
+			//$('#menu-main-menu').fadeToggle(700);
+			$('#menu-main-menu').slideToggle(700);
+			//$('#menu_top_border').toggle();
+			$('#menu_top_border').slideToggle();
+
+			});
+
+// Back to Top Navigation
+
+	// Show or hide the sticky footer button
+
+		// Width of Button
+			var button_width = $('.page_wrapper').width();
+			$('.go_top').css('width', button_width);
+
+			//run again when window resizes
+			$( window ).resize(function() {
+			var button_width = $('.page_wrapper').width();
+			$('.go_top').css('width', button_width);
+			});
+
+			$(window).scroll(function() {
+				var responsive_viewport = $(window).width();
+
+				if ($(this).scrollTop() > 200 && responsive_viewport < 570) {
+					$('.go_top').fadeIn(200);
+				} else {
+					$('.go_top').fadeOut(200);
+				}
+			});
+
+	// Animate the scroll to top
+			$('.go_top').click(function(event) {
+				event.preventDefault();
+
+				$('html, body').animate({scrollTop: 0}, 300);
+			});
+
+// Show hide content wrapped in dd tags
+
+		$("#faqs dd").hide();
+		$("#faqs dt").click(function () {
+				$(this).next("#faqs dd").slideToggle(500);
+				$(this).toggleClass("expanded");
+			});
+
+// Make the class overlay clickable
+
+		$(".overlay").click(function(){
+			window.location=$(this).find("a").attr("href");
+			return false;
+		});
+
+// Make the class visible_overlay_container clickable
+
+		$(".visible_overlay_container").click(function(){
+			window.location=$(this).find("a").attr("href");
+			return false;
+		});
+
+// Toggle Search
+
+	$("#searchsubmit").on("click", function(){
+
+	$("#searchsubmit").hide();
+	});
+
+
       },
       finalize: function() {
         // JavaScript to be fired on all pages, after page specific JS is fired
