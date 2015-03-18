@@ -22,6 +22,155 @@ function carawebs_featured_image( $page_ID ){
 }
 
 /**
+ * HTML footer in quarter-quarter-half layout
+ * @return [type] [description]
+ */
+function carawebs_footer_half_layout(){
+
+  $layout_option = get_field( 'select_footer_layout', 'option' );
+
+  if( 'quarters' == $layout_option ){
+
+    ob_start();
+    ?>
+    <div id="footer">
+    	<div id="footer_page_wrapper" class="columns_211 page_wrapper page_background">
+    		<div class="footer_top_border"></div>
+        <div class="half left">
+          <div class="nested_halves">
+        		<div class="half left">
+        			<div itemscope itemtype="http://schema.org/Organization">
+                <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+                  <p>
+                    <span itemprop="name">Expedition Engineering</span><br/>
+                    <span itemprop="streetAddress"><?php the_field('address_line_1', 'option')?></span><br/>
+                    <span itemprop="streetAddress"><?php the_field('address_line_2', 'option')?></span><br/>
+                    <span itemprop="addressLocality"><?php the_field('town', 'option')?></span>,&nbsp;
+                    <span itemprop="postalCode"><?php the_field('postcode', 'option')?></span>
+                  </p>
+                </div>
+                <p>
+                  <span itemprop="telephone"><span class="address_titles">Phone:</span><?php the_field('phone_number', 'option'); ?></span><br/>
+                  <span itemprop="fax"><span class="address_titles">Fax:</span><?php the_field('fax_number', 'option'); ?></span><br/>
+                  <span itemprop="email"><span class="address_titles">Email:</span><a href="mailto: <?php the_field('contact_email', 'option'); ?>"><?php the_field('contact_email', 'option'); ?></a></span>
+                </p>
+              </div>
+              <div class="social_menu_wrapper">
+                <?php
+                if (has_nav_menu('social_menu')) :
+                  wp_nav_menu(['theme_location' => 'social_menu', 'walker' => new \Walker_Nav_Menu(), 'menu_class' => 'menu', 'menu_id' => 'menu-social-menu']);
+                endif;
+                ?>
+        			</div>
+              <p>Site by <a href="http://carawebs.com">Carawebs</a></p>
+        		</div>
+        		<div class="half right">
+        			<?php the_field( 'ust_link', 'option' ); ?>
+        		</div>
+          </div><!-- end nested columns_211 -->
+      </div>
+    		<div class="half right footer_box">
+          <?php the_field( 'company_description', 'option' ); ?>
+    		</div>
+    	</div>
+    </div><?php
+    $var = ob_get_clean();
+
+    echo $var;
+  }
+
+  if ( 'thirds' == $layout_option ){
+
+    ob_start();
+    ?>
+    <div id="footer">
+    	<div id="footer_page_wrapper" class="page_wrapper page_background">
+    		<div class="footer_top_border"></div>
+        <div class="third first">
+          <div itemscope itemtype="http://schema.org/Organization">
+            <div itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+              <p>
+                <span itemprop="name">Expedition Engineering</span><br/>
+                <span itemprop="streetAddress"><?php the_field('address_line_1', 'option')?></span><br/>
+                <span itemprop="streetAddress"><?php the_field('address_line_2', 'option')?></span><br/>
+                <span itemprop="addressLocality"><?php the_field('town', 'option')?></span>,&nbsp;
+                <span itemprop="postalCode"><?php the_field('postcode', 'option')?></span>
+              </p>
+              <p>
+                <span itemprop="telephone"><span class="address_titles">Phone:</span><?php the_field('phone_number', 'option'); ?></span><br/>
+                <span itemprop="fax"><span class="address_titles">Fax:</span><?php the_field('fax_number', 'option'); ?></span><br/>
+                <span itemprop="email"><span class="address_titles">Email:</span><a href="mailto: <?php the_field('contact_email', 'option'); ?>"><?php the_field('contact_email', 'option'); ?></a></span>
+              </p>
+            </div>
+          </div>
+          <div class="social_menu_wrapper">
+            <?php
+            if (has_nav_menu('social_menu')) :
+              wp_nav_menu(['theme_location' => 'social_menu', 'walker' => new \Walker_Nav_Menu(), 'menu_class' => 'menu', 'menu_id' => 'menu-social-menu']);
+            endif;
+            ?>
+    			</div>
+          <p>Site by <a href="http://carawebs.com">Carawebs</a></p>
+        </div>
+        <div class="third">
+    			<?php the_field( 'ust_link', 'option' ); ?>
+        </div>
+      	<div class="third footer_box">
+          <?php the_field( 'company_description', 'option' ); ?>
+      	</div>
+    	</div>
+    </div><?php
+    $var = ob_get_clean();
+
+    echo $var;
+  }
+
+}
+
+/**
+ * Set Up Options pages for ACF.
+ *
+ *
+ */
+if( function_exists('acf_add_options_page') ) {
+
+	acf_add_options_page(array(
+		'page_title' 	=> 'Site Footer Settings & Content',
+		'menu_title'	=> 'Site Footer',
+		'menu_slug' 	=> 'site-footer-settings',
+		'capability'	=> 'edit_pages',
+		'redirect'		=> false
+	));
+
+}
+
+/**
+ * Set up menu
+ */
+register_nav_menus(array(
+    'social_menu' => __('Social Menu', 'carawebs')
+  ));
+
+/**
+ * Encode email address of mailto: links in navigation
+ *
+ * Borrowed from Twenty Fifteen Theme
+ *
+ * @return array HTML attributes for Menu item
+ */
+function carawebs_nav_encode_email( $atts, $item, $args ) {
+
+	if ( preg_match( '/^mailto:(.+)/', $atts['href'], $match ) ) {
+
+		$atts['href'] = 'mailto:' . antispambot( $match[1] );
+
+	}
+	return $atts;
+ }
+
+add_filter( 'nav_menu_link_attributes', 'Roots\Sage\Extras\carawebs_nav_encode_email', 10, 3 );
+
+/**
  * [carawebs_first_projects_front_page description]
  * @param  [type] $page_ID [description]
  * @return [type]          [description]
@@ -1299,9 +1448,11 @@ function carawebs_about_images() {
 
 if(get_field('extra_images')):
 
+	$i = 1;
+
 	while(has_sub_field('extra_images')):
 
-	?><div class="box"><?php
+	?><div class="box<?php echo ( $i > 2 ) ? ' topspace' : '' ;?>"><?php
 
 	$attachment_id = get_sub_field('about_image');
 	$size = "medium"; // (thumbnail, medium, large, full or custom size)
@@ -1315,11 +1466,11 @@ if(get_field('extra_images')):
 		</div>
 
 		<?php
+		$i++;
 
 	endwhile;
 
 	endif;
-
 
 }
 
