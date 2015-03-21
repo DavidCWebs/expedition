@@ -28,22 +28,18 @@
                       wp_nav_menu(['theme_location' => 'primary_navigation', 'walker' => new Nav\SageNavWalker(), 'menu_class' => 'menu']);
                     endif;
                     ?>
-                    <!--<ul id="menu-main-menu" class="menu"><li id="menu-item-16" class="menu-item menu-item-type-custom menu-item-object-custom current-menu-item current_page_item menu-item-home menu-item-16"><a href="http://localhost/expedition/">Home</a></li>
-    <li id="menu-item-391" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-391"><a href="http://localhost/expedition/about/">About</a></li>
-    <li id="menu-item-56" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-56"><a href="http://localhost/expedition/category/project/">Projects</a></li>
-    <li id="menu-item-345" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-345"><a href="http://localhost/expedition/category/people/">People</a></li>
-    <li id="menu-item-219" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-219"><a href="http://localhost/expedition/services/">Services</a></li>
-    <li id="menu-item-732" class="menu-item menu-item-type-taxonomy menu-item-object-category menu-item-732"><a href="http://localhost/expedition/category/thinking/">Thinking</a></li>
-    <li id="menu-item-217" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-217"><a href="http://localhost/expedition/news/">News</a></li>
-    <li id="menu-item-390" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-390"><a href="http://localhost/expedition/contact/">Contact</a></li>
-  </ul>-->
-    <div style="clear:both;"></div>
+                    <?php
+                    if (has_nav_menu('project_sub_categories')) :
+                      wp_nav_menu(['theme_location' => 'project_sub_categories', 'walker' => new Nav\SageNavWalker(), 'menu_class' => 'categories_menu', 'menu_id' => 'menu-project-sub-categories']);
+                    endif;
+                    ?>
+    <!--<div style="clear:both;"></div>-->
                 </div>
             </div>
-            <div style="clear:both;"></div>
+            <!--<div style="clear:both;"></div>-->
         </div>
         <div id="#dotted_border" class="dotted_border"></div>
-    <div style="clear:both;"></div>
+    <!--<div style="clear:both;"></div>-->
     </div>
-    <div style="clear:both;"></div>
+    <!--<div style="clear:both;"></div>-->
 </div>

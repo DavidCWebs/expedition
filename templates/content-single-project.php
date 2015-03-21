@@ -6,7 +6,7 @@ while (have_posts()) : the_post(); ?>
 		<div class="columns_312">
 			<div id="project_text" class="third">
 				<div id="post-593" class="post_box test-test top" itemscope itemtype="http://schema.org/Article">
-          <p class="paramove"><a class ="category_link" href="http://carawebstest.com/exp/category/project/commercial/">Back to Commercial</a></p>
+          <?php Extras\carawebs_back_to_category(); ?>
           <div class="post_content" itemprop="articleBody">
             <?php the_content(); ?>
 					</div>

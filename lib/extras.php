@@ -691,10 +691,10 @@ function carawebs_googlemaps_control(){
 	if (is_page('388')) {
 
     // Register the control script - in a folder called js in the active Thesis skin
-    wp_register_script( 'carawebs_googlemap', THESIS_USER_SKIN_URL . '/js/google-map.js');
+    wp_register_script( 'carawebs_googlemap', get_template_directory_uri() . '/assets/scripts/vendor/google-map.js');
 
 	// Pass variables to the script - this avoids having to hardcode the map marker in javascript
-	$imagelocation = THESIS_USER_SKIN_URL . '/images/expedition_marker.png';
+	$imagelocation = get_template_directory_uri() . '/assets/images/expedition_marker.png';
 	$site_variables = array(
     'markerImage' => $imagelocation
     );

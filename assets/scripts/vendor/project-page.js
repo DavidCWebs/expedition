@@ -40,7 +40,8 @@ $(window).resize(function () {
         // Hide the half columns
         // THIS IS F**KING UP FOOTER
         // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-        $('.columns_211').hide();
+        //$('.columns_211').hide();
+        $('#project_info_container').hide();
 
         // Move post_content and project_info back
         $( '#project_text' ).prepend( $( '#project_info' ) );
