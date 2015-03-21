@@ -29,9 +29,13 @@
                     endif;
                     ?>
                     <?php
-                    if (has_nav_menu('project_sub_categories')) :
-                      wp_nav_menu(['theme_location' => 'project_sub_categories', 'walker' => new Nav\SageNavWalker(), 'menu_class' => 'categories_menu', 'menu_id' => 'menu-project-sub-categories']);
-                    endif;
+                    if (is_singular( 'project' ) || is_category()){
+
+                      if (has_nav_menu('project_sub_categories')) :
+                        wp_nav_menu(['theme_location' => 'project_sub_categories', 'walker' => new Nav\SageNavWalker(), 'menu_class' => 'categories_menu', 'menu_id' => 'menu-project-sub-categories']);
+                      endif;
+
+                    }
                     ?>
     <!--<div style="clear:both;"></div>-->
                 </div>

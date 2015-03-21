@@ -948,7 +948,7 @@ function carawebs_project_fields() {
 // Show posts of 'post', 'page' and 'project' post types in the main query
 // Doesn't fire on admin pages or blog (home) page
 
-add_action( 'pre_get_posts', 'Roots\Sage\Extras\carawebs_post_types_to_query' );
+//add_action( 'pre_get_posts', 'Roots\Sage\Extras\carawebs_post_types_to_query' );
 
 function carawebs_post_types_to_query( $query ) {
 
