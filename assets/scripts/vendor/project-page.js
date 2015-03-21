@@ -38,7 +38,7 @@ $(window).resize(function () {
         $( '#project_text' ).prepend( $( '.paramove' ) );
 
         // Hide the half columns
-        // THIS IS FUCKING UP FOOTER
+        // THIS IS F**KING UP FOOTER
         // +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
         $('.columns_211').hide();
 
