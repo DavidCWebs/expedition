@@ -59,7 +59,13 @@ function display_sidebar() {
       [
         'is_404',
         'is_front_page',
-        ['is_page_template', 'template-custom.php']
+        ['is_page_template', 'template-custom.php'],
+        'is_single',
+        'is_archive',
+        'is_page',
+        ['is_page_template', 'about.php'],
+        ['is_post_type_archive', ['project', 'people']],
+        ['is_singular', ['project', 'people', 'thinking']],
       ]
     );
 

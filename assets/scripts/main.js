@@ -26,79 +26,87 @@
 
 
         // Responsive Menu
+        // ---------------------------------------------------------------------
 
-	// prepend menu icon
-			$('#nav_wrap').prepend('<div id="menu_icon">Menu</div>');
+      	// prepend menu icon
+      			$('#nav_wrap').prepend('<div id="menu_icon">Menu</div>');
 
-	// toggle nav
-			$("#menu_icon").on("click", function(){
-			//$('#menu-main-menu').toggle();
-			//$('#menu-main-menu').fadeToggle(700);
-			$('#menu-main-menu').slideToggle(700);
-			//$('#menu_top_border').toggle();
-			$('#menu_top_border').slideToggle();
+      	// toggle nav
+      			$("#menu_icon").on("click", function(){
+      			//$('#menu-main-menu').toggle();
+      			//$('#menu-main-menu').fadeToggle(700);
+      			$('#menu-main-menu').slideToggle(700);
+      			//$('#menu_top_border').toggle();
+      			$('#menu_top_border').slideToggle();
 
-			});
+      			});
 
-// Back to Top Navigation
+      // Back to Top Navigation
+      // -----------------------------------------------------------------------
 
-	// Show or hide the sticky footer button
+      	// Show or hide the sticky footer button
 
-		// Width of Button
-			var button_width = $('.page_wrapper').width();
-			$('.go_top').css('width', button_width);
+      		// Width of Button
+      			var button_width = $('.page_wrapper').width();
+      			$('.go_top').css('width', button_width);
 
-			//run again when window resizes
-			$( window ).resize(function() {
-			var button_width = $('.page_wrapper').width();
-			$('.go_top').css('width', button_width);
-			});
+      			//run again when window resizes
+      			$( window ).resize(function() {
+      			var button_width = $('.page_wrapper').width();
+      			$('.go_top').css('width', button_width);
+      			});
 
-			$(window).scroll(function() {
-				var responsive_viewport = $(window).width();
+      			$(window).scroll(function() {
+      				var responsive_viewport = $(window).width();
 
-				if ($(this).scrollTop() > 200 && responsive_viewport < 570) {
-					$('.go_top').fadeIn(200);
-				} else {
-					$('.go_top').fadeOut(200);
-				}
-			});
+      				if ($(this).scrollTop() > 200 && responsive_viewport < 570) {
+      					$('.go_top').fadeIn(200);
+      				} else {
+      					$('.go_top').fadeOut(200);
+      				}
+      			});
 
-	// Animate the scroll to top
-			$('.go_top').click(function(event) {
-				event.preventDefault();
+      // Animate the scroll to top
+      // -----------------------------------------------------------------------
 
-				$('html, body').animate({scrollTop: 0}, 300);
-			});
+      			$('.go_top').click(function(event) {
+      				event.preventDefault();
 
-// Show hide content wrapped in dd tags
+      				$('html, body').animate({scrollTop: 0}, 300);
+      			});
 
-		$("#faqs dd").hide();
-		$("#faqs dt").click(function () {
-				$(this).next("#faqs dd").slideToggle(500);
-				$(this).toggleClass("expanded");
-			});
+      // Show hide content wrapped in dd tags
+      // -----------------------------------------------------------------------
 
-// Make the class overlay clickable
+      		$("#faqs dd").hide();
+      		$("#faqs dt").click(function () {
+      				$(this).next("#faqs dd").slideToggle(500);
+      				$(this).toggleClass("expanded");
+      			});
 
-		$(".overlay").click(function(){
-			window.location=$(this).find("a").attr("href");
-			return false;
-		});
+      // Make the class overlay clickable
+      // -----------------------------------------------------------------------
 
-// Make the class visible_overlay_container clickable
+      		$(".overlay").click(function(){
+      			window.location=$(this).find("a").attr("href");
+      			return false;
+      		});
 
-		$(".visible_overlay_container").click(function(){
-			window.location=$(this).find("a").attr("href");
-			return false;
-		});
+      // Make the class visible_overlay_container clickable
+      // -----------------------------------------------------------------------
 
-// Toggle Search
+      		$(".visible_overlay_container").click(function(){
+      			window.location=$(this).find("a").attr("href");
+      			return false;
+      		});
 
-	$("#searchsubmit").on("click", function(){
+      // Toggle Search
+      // -----------------------------------------------------------------------
 
-	$("#searchsubmit").hide();
-	});
+      	$("#searchsubmit").on("click", function(){
+
+      	$("#searchsubmit").hide();
+      	});
 
 
       },
