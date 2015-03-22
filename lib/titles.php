@@ -25,13 +25,19 @@ function title() {
 
     }
 
-  } elseif ( is_archive() && !is_post_type_archive() ) {
+  } elseif ( is_archive() && !is_post_type_archive() && !is_tax() ) {
 
     return get_the_archive_title(); //post_type_archive_title( $prefix, $display );
 
   } elseif ( is_post_type_archive(  ) ){
 
     return post_type_archive_title( '', false );
+
+  } elseif ( is_tax( 'project-category' ) ){ // Custom Taxonomy archive
+
+    $tax = get_term_by( 'slug', get_query_var( 'term' ), get_query_var( 'taxonomy' ) );
+
+    return $tax->name;
 
   } elseif (is_search()) {
 
