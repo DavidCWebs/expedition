@@ -263,10 +263,38 @@ function carawebs_nav_encode_email( $atts, $item, $args ) {
 
 add_filter( 'nav_menu_link_attributes', 'Roots\Sage\Extras\carawebs_nav_encode_email', 10, 3 );
 
+add_filter('pre_get_posts', 'Roots\Sage\Extras\query_post_type');
+
+function query_post_type($query) {
+
+  if(is_category() || is_tag()) {
+
+    $post_type = get_query_var('post_type');
+
+    if($post_type){
+
+	    $post_type = $post_type;
+
+      }
+	  else{
+
+	    $post_type = array( 'post','project', 'nav_menu_item' ); // replace cpt to your custom post type
+
+      }
+
+    $query->set( 'post_type', $post_type );
+
+	return $query;
+
+  }
+
+}
+
 /**
- * [carawebs_first_projects_front_page description]
- * @param  [type] $page_ID [description]
- * @return [type]          [description]
+ * Frontpage showcased projects/thinking articles
+ *
+ * @param  int    The page ID
+ * @return string HTML to build teasers
  */
 function carawebs_first_projects_front_page( $page_ID ){
 
@@ -998,7 +1026,7 @@ function carawebs_force_crop() {
 		}
 	}
 
-add_action ('add_attachment','carawebs_force_crop');
+add_action ('add_attachment','Roots\Sage\Extras\carawebs_force_crop');
 
 
 

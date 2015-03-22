@@ -172,4 +172,44 @@ function custom_post_type_person() {
 // Hook into the 'init' action
 add_action( 'init', 'custom_post_type_person', 0 );
 
+/**
+ * Register a custom taxonomy 'project-category' for 'project' Custom Post Types.
+ *
+ *
+ */
+function carawebs_project_taxonomy() {
+
+	$labels = array(
+		'name'                       => _x( 'Project Category', 'Taxonomy General Name', 'expedition' ),
+		'singular_name'              => _x( 'Project Category', 'Taxonomy Singular Name', 'expedition' ),
+		'menu_name'                  => __( 'Project Category', 'expedition' ),
+		'all_items'                  => __( 'All Project Categories', 'expedition' ),
+		'parent_item'                => __( 'Parent Project Category', 'expedition' ),
+		'parent_item_colon'          => __( 'Parent Project Category:', 'expedition' ),
+		'new_item_name'              => __( 'New Project Category Name', 'expedition' ),
+		'add_new_item'               => __( 'Add New Project Category', 'expedition' ),
+		'edit_item'                  => __( 'Edit Project Category', 'expedition' ),
+		'update_item'                => __( 'Update Project Category', 'expedition' ),
+		'separate_items_with_commas' => __( 'Separate stages with commas', 'expedition' ),
+		'search_items'               => __( 'Search Project Category', 'expedition' ),
+		'add_or_remove_items'        => __( 'Add or remove stages', 'expedition' ),
+		'choose_from_most_used'      => __( 'Choose from the most used stages', 'expedition' ),
+		'not_found'                  => __( 'Not Found', 'expedition' ),
+	);
+	$args = array(
+		'labels'                     => $labels,
+		'hierarchical'               => true,
+		'public'                     => true,
+		'show_ui'                    => true,
+		'show_admin_column'          => true,
+		'show_in_nav_menus'          => true,
+		'show_tagcloud'              => false,
+	);
+	register_taxonomy( 'project-category', array( 'project' ), $args );
+
+}
+
+// Hook into the 'init' action
+add_action( 'init', 'carawebs_project_taxonomy', 0 );
+
 ?>
