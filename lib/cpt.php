@@ -138,7 +138,7 @@ function custom_post_type_person() {
 	);
 
 	$rewrite = array(
-		'slug'                => 'person',
+		'slug'                => 'people',
 		'with_front'          => true,
 		'pages'               => true,
 		'feeds'               => true,

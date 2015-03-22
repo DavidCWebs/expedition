@@ -25,11 +25,11 @@ function carawebs_body_class($classes) {
 
 add_filter('body_class', 'Roots\Sage\Extras\carawebs_body_class');
 
-function carawebs_featured_image( $page_ID ){
+function carawebs_teaser_image( $page_ID, $size = 'full' ){
 
   if ( has_post_thumbnail( $page_ID ) ) {
 
-    $image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $page_ID ), 'carawebs_frontpage_thumbnail' );
+    $image_array = wp_get_attachment_image_src( get_post_thumbnail_id( $page_ID ), $size );
     $image = $image_array;
 
     } else {
@@ -41,7 +41,77 @@ function carawebs_featured_image( $page_ID ){
   return $image;
 
 }
+/**
+* Featured Image function for posts and pages
+*
+* @param  string $class The CSS class name to apply to the image default is .img-responsive
+* @param  string $size  The image size to use. Default is full size
+* @return string        img -> width | height | src | class | alt | title
+*
+*/
+/*
+function carawebs_featured_image( $size = 'full', $firstclass ='', $post_ID = '' ) {
 
+    //$class = $firstclass . ' img-responsive'; // Ensure that all images are responsive (Bootstrap)
+    $class = $firstclass;
+
+
+    if ( empty($post_ID )){
+
+      global $post;
+
+      $post_ID = $post->ID;
+
+    }
+
+    echo "<h1>IDDDDD: " . $post_ID . "</h1>";
+
+    if ( has_post_thumbnail( $post_ID ) ) {
+
+    // get the title attribute of the post or page
+    // and apply it to the alt tag of the image if the alt tag is empty
+    //
+    $attachment_id = get_post_thumbnail_id( $post_ID );
+
+    if ( get_post_meta($attachment_id, '_wp_attachment_image_alt', true) === '' ) {
+        // if no alt attribute is filled out then echo "Featured Image of article: Article Name"
+        $alt = the_title_attribute(
+            array(
+                'before' => __( 'Featured image of article: ', 'YOUR-THEME-TEXTDOMAIN' ),
+                'echo' => false
+            )
+        );
+
+    } else {
+
+        // the post thumbnail img alt tag
+        $alt = trim( strip_tags( get_post_meta( $attachment_id, '_wp_attachment_image_alt', true ) ) );
+        // the post thumbnail img title tag
+
+    }
+
+    // Get the title attribute for the featured image
+    $title = get_the_title( $attachment_id );
+
+    // Get the Image Caption
+    $caption = get_post( $attachment_id )->post_excerpt;
+
+    $default_attr = array(
+        'class' => $class,
+        'alt' => $alt,
+        'title' => $title
+    );
+
+    // echo the featured image
+    //the_post_thumbnail( $size, $default_attr );
+
+    return the_post_thumbnail( $size, $default_attr );
+    //echo $caption;
+
+    }
+
+}
+*/
 /**
  * HTML footer in quarter-quarter-half layout
  * @return [type] [description]
@@ -213,8 +283,11 @@ function carawebs_first_projects_front_page( $page_ID ){
 
         $permalink = get_the_permalink( $article_ID );
         $article_title = get_the_title( $article_ID );
-        $image_array = carawebs_featured_image( $article_ID );
+        $image_array = carawebs_teaser_image( $article_ID, 'carawebs_frontpage_thumbnail' );
         $image_url = $image_array[0];
+        $thumb_ID = get_post_thumbnail_id( $article_ID );
+        $alt = get_post_meta( $thumb_ID, '_wp_attachment_image_alt', true );
+        $alt = !empty( $alt) ? 'alt="' . $alt . '"' : '';
         $post_type = get_post_type( $article_ID );
 
         if ( 'thinking' == $post_type ){
@@ -237,7 +310,7 @@ function carawebs_first_projects_front_page( $page_ID ){
                     </div>
                 </div>
                 <a class="featured_image_link" href="$permalink">
-                  <img width="616" height="455" src="$image_url" class="aligncenter wp-post-image" alt="biomimetic-offic-expedition-engineering-1" />
+                  <img width="{$image_array[1]}" height="{$image_array[2]}" src="$image_url" class="aligncenter wp-post-image" $alt />
                 </a>
             </div>
           </div>
@@ -254,7 +327,7 @@ EOF;
           <div class="$orient_class">
             <div class="query_box first_teaser half overlay_container">
               <a class="featured_image_link" href="$permalink">
-                <img width="620" height="455" src="$image_url" class="attachment-carawebs_frontpage_thumbnail wp-post-image" alt="WWF-living-planet-centre-surrey-expedition-engineering-1" />
+                <img width="620" height="455" src="$image_url" class="attachment-carawebs_frontpage_thumbnail wp-post-image" $alt />
               </a>
               <div class="overlay">
                   <h2 class="headline overlay_headline"><a href="$permalink" rel="bookmark">$article_title</a></h2>
@@ -813,21 +886,27 @@ function carawebs_default_thumbnail( $html ) {
 			return $html;
 }*/
 
-add_filter('post_thumbnail_html', 'carawebs_default_thumbnail');
+add_filter('post_thumbnail_html', 'Roots\Sage\Extras\carawebs_default_thumbnail');
 
 function carawebs_default_thumbnail($html) {
 
   if (is_home()) {
 
-    if ( empty( $html ) )
-	$html = '<img src="' . THESIS_USER_SKIN_URL . '/images/default.jpg' . '" alt="" />';
+    if ( empty( $html ) ){
 
-	return $html;
+      $html = '<img src="' . get_template_directory_uri() . '/assets/images/default.jpg' . '" alt="" />';
+
+      }
+
+	     return $html;
+
 	}
 
 
   else {
+
      return $html;
+
 	}
 }
 
@@ -1200,66 +1279,6 @@ function carawebs_test_arrays() {
 //add_action('hook_after_test_arrays', 'carawebs_test_arrays');
 
 /*==============================================================================
-	Dynamic Soliloquy
-	============================================================================*/
-/*
-function carawebs_dynamic_soliloquy(){
-
-	//from image repeater field
-	$rows = get_field('project_images');
-
-		if($rows)
-		{
-			$stack = array();
-			foreach($rows as $row)
-			{
-				array_push($stack,$row['image']);
-
-			}
-
-		}
-
-		$img_ids = implode(',',$stack);
-
-
-	//Generate the slider: $img_ids from repeater $id_array from gallery --see line 316
-	//soliloquy_dynamic( array( 'id' => 'custom-project-images', 'images' => $img_ids, 'crop' => 'true', 'link' => 'file', 'thumbnails' => 'true', 'thumbnails_width' => '140', 'thumbnails_margin' => '20', 'thumbnails_min' => '4' ) );
-	soliloquy_dynamic( array( 'id' => 'custom-project-images', 'images' => $img_ids, 'crop' => 'true', 'thumbnails' => 'true', 'thumbnails_width' => '140', 'thumbnails_margin' => '20', 'thumbnails_min' => '4' ) );
-
-}
-
-add_action('hook_bottom_dynamic_soliloquy', 'carawebs_dynamic_soliloquy');
-*/
-/*==============================================================================
-	Add Frontpage Slider
-	============================================================================*/
-/*
-function carawebs_main_slider() {
-
-	if ( function_exists( 'soliloquy_slider' ) ) soliloquy_slider( '222' );
-
-}
-
-add_action('hook_bottom_main_slider', 'carawebs_main_slider');
-
-//Add Projects Slider/
-
-function carawebs_projects_slider() {
-
-	$post = get_field('image_slider'); //
-	$slider_id = $post->ID;
-
-	wp_reset_postdata();
-
-if ( function_exists( 'soliloquy_slider' ) ) soliloquy_slider( $slider_id );
-
-
-}
-add_action('hook_bottom_projects_slider', 'carawebs_projects_slider');
-
-*/
-
-/*==============================================================================
 	Theme support: Thumbnails & custom image sizes
 	============================================================================*/
 
@@ -1422,19 +1441,6 @@ function cw_add_thinking_category_automatically($post_ID) {
 }
 add_action('publish_thinking', 'cw_add_thinking_category_automatically');
 
-
-
-/* Automatically assign "project" custom post types to the category "projects"
-
-function cw_add_project_category_automatically($post_ID) {
-	global $wpdb;
-	if(!has_term('','category',$post_ID)){
-		$cat = array(3);
-		wp_set_object_terms($post_ID, $cat, 'category');
-	}
-}
-add_action('publish_project', 'cw_add_project_category_automatically');
-*/
 /*====================================================================*/
 
 /* Add heading to slider */
@@ -1456,24 +1462,6 @@ function tgm_soliloquy_custom_title_after_slider( $slider, $id, $images, $solilo
 	}
 
 }
-
-/*add_filter( 'tgmsp_dynamic_after_slider', 'tgm_soliloquy_dynamic_title_after_slider', 10, 5 );
-function tgm_soliloquy_dynamic_title_after_slider( $slider, $id, $images, $soliloquy_data, $soliloquy_count ) {
-
-    if ( '222' == $id ) { // if slider id ==222, don't do anything
-    return $slider;
-	}
-
-    else {
-    // Build the H1 tag.
-    $page_title = get_the_title($post->ID);
-    $h1 = '<h1 class="headline project_headline">' . $page_title . '</h1>';
-
-    // Append the tag to the slider.
-    return $slider . $h1;
-	}
-
-}*/
 
 /*====================================================================*/
 
@@ -2277,22 +2265,6 @@ function carawebs_read_full_article() {
 //add_action ('hook_after_read_full_article', 'carawebs_read_full_article');
 
 /*====================================================================*/
-
-/*Social Sharing*/
-
-/* With tooltip span**
- * function carawebs_social_sharing(){
-?>
-<p>Share this article:</p>
-<ul id="social_share_icons" class="menu">
-		<li><a class="email_share" href="mailto:?subject=I thought you might like this web page&body=Check out this site: <?php echo urlencode(get_permalink());?>">Email<span>Share by Email</span></a></li>
-		<li><a class="linkedin_share" href="http://www.linkedin.com/shareArticle?mini=true&url=<?php echo urlencode(get_permalink());?>">LinkedIn<span>Share this on LinkedIn</span></a></li>
-		<li><a class="twitter_share" href="https://twitter.com/intent/tweet?url=<?php echo urlencode(get_permalink());?>&text=<?php echo get_the_title(); ?>">Twitter<span>Tweet this to your followers</span></a></li>
-
-</ul>
-	<?php
-}
-* ****/
 
 function carawebs_social_sharing(){
 ?>

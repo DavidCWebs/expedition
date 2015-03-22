@@ -25,24 +25,19 @@ use Roots\Sage\Extras
             </form>
         </div>
         <div id="main_slider">
-          <?php
-
-          $test = Extras\carawebs_frontpage_slider();
-
-          ?>
-
+          <?php $test = Extras\carawebs_frontpage_slider(); ?>
         </div>
 
         <?php
         $page_ID = get_the_ID();
-        $test = Extras\return_ID($page_ID);
-        echo "<h1>The ID is: ";
-        var_dump($test);
-        echo "</h1>";
+        //$test = Extras\return_ID($page_ID);
+        //echo "<h1>The ID is: ";
+        //var_dump($test);
+        //echo "</h1>";
         ?>
     </div>
     <div class="columns_211">
-      <?php echo Extras\carawebs_first_projects_front_page($page_ID); ?>
+      <?php echo Extras\carawebs_first_projects_front_page( $page_ID ); ?>
     </div>
     <div id="teaser_grid">
         <div class="teaser twitter_container margin_top">
