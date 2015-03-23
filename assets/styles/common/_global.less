@@ -1095,10 +1095,11 @@ display:none;
 	width:20px;
 	height:20px;
 	text-indent: -9999px;
-	background: url(images/expedition_search1.png) top left no-repeat;
+	background: url(../../assets/images/expedition_search1.png) top left no-repeat;
 	border: none;
 }
 #searchsubmit:hover {opacity: 0.5;}
+
 /* =============================================================================
 *	Link Styles
 /* ============================================================================*/
@@ -1106,19 +1107,28 @@ a[href^="http://"],
 a[href^="https://"],
 a[href^="http://"]:visited,
 a[href^="https://"]:visited {
+
 	color: #fff;
 	text-decoration: underline;
+
 }
 
 a[href^="//carawebstest.com/exp/"],
-a[href^="http://localhost/exp/"],
+a[href^="http://localhost/expedition/"],
+a[href^="http://localhost:3000/expedition/"],
 a[href^="https://carawebstest.com/exp/"],
 a[href^="//www.carawebstest.com/exp/"],
-a[href^="http://localhost/exp/"],
+a[href^="http://localhost/expedition/"],
 a[href^="https://www.carawebstest.com/exp/"] {
 	color: #fff;
 	text-decoration: none;
 	font-weight: bold;
+}
+
+h4 a.underline {
+
+	text-decoration: underline;
+
 }
 
 /*a[href^="//carawebstest.com/exp/"]:hover,
@@ -1332,7 +1342,8 @@ body {
 .post_content,
 .project.single.template-single-project .post_content,
 .project.single.template-single-project .extensive-content,
-.template-single-people .post_content {
+.template-single-people .post_content,
+.single-people.person.single .post_content {
 	color: #fff;
 	background-color: #4B4B50;
 	font-size: 14px;
@@ -1503,9 +1514,13 @@ h4 a:visited:hover {
 	color: #b5d334;
 }
 
+.single-people .wp-post-image {
+  margin-bottom: 0;
+}
+
 h4.active,
 .person h4.active,
-#people_grid h4.active-heading {
+#people_grid h4.active-heading a {
 	color: #b5d334;
 	font-size: 12px;
 	line-height: 16px;

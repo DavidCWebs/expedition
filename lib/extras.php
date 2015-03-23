@@ -42,7 +42,7 @@ function carawebs_people_query( $person_ID ) {
       $return.= "
       <div class='query_box quarter_box'>
           <a href='$permalink'><img src='$image_url' title='$title'></a>
-          <h4$active_class>$title</h4><h4 class='subheading'>$job_title</h4>
+          <h4$active_class><a class='underline' href='$permalink'>$title</a></h4><h4 class='subheading'>$job_title</h4>
       </div>
       ";
 
@@ -97,6 +97,7 @@ function carawebs_body_class($classes) {
     if( is_singular( 'people' ) ){
 
       $classes[]  = 'person';
+      $classes[]  = 'template-single-people';
 
     }
 
@@ -149,7 +150,7 @@ function carawebs_teaser_image( $page_ID, $size = 'full' ){
 * @return string        img -> width | height | src | class | alt | title
 *
 */
-/*
+
 function carawebs_featured_image( $size = 'full', $firstclass ='', $post_ID = '' ) {
 
     //$class = $firstclass . ' img-responsive'; // Ensure that all images are responsive (Bootstrap)
@@ -163,8 +164,6 @@ function carawebs_featured_image( $size = 'full', $firstclass ='', $post_ID = ''
       $post_ID = $post->ID;
 
     }
-
-    echo "<h1>IDDDDD: " . $post_ID . "</h1>";
 
     if ( has_post_thumbnail( $post_ID ) ) {
 
@@ -211,7 +210,7 @@ function carawebs_featured_image( $size = 'full', $firstclass ='', $post_ID = ''
     }
 
 }
-*/
+
 /**
  * HTML footer in quarter-quarter-half layout
  * @return [type] [description]

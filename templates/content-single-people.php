@@ -6,7 +6,9 @@ while (have_posts()) : the_post(); ?>
     <div class="columns_312">
         <div id="person_data" class="third">
             <div id="post-880" class="post_box top">
-            <a class="featured_image_link" href="http://carawebstest.com/exp/person/andrew-weir/"><img width="300" height="380" src="http://carawebstest.com/exp/wp-content/uploads/2014/12/DSC0588-300x380.jpg" class="attachment-carawebs_person wp-post-image" alt="_DSC0588"></a><h1 class="headline person">Andrew Weir&nbsp;-&nbsp;Director</h1>
+              <?php Extras\carawebs_featured_image('carawebs_person', 'attachment-carawebs_person wp-post-image'); ?>
+            <!--<img width="300" height="380" src="http://carawebstest.com/exp/wp-content/uploads/2014/12/DSC0588-300x380.jpg" class="attachment-carawebs_person wp-post-image" alt="_DSC0588">-->
+            <h1 class="headline person"><?php the_title();?> - <?php the_field('job_title'); ?></h1>
                 <div id="largeview_post_box">
                     <div class="post_content">
                     <?php the_content(); ?>
