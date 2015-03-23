@@ -13,9 +13,9 @@ if (!have_posts()) : ?>
   	</div>
   	<div class="two_thirds">
   		<div id="grid">
-      <?php while (have_posts()) : the_post(); ?>
-        <?php get_template_part('templates/content', 'project-teaser'); ?>
-      <?php endwhile; ?>
+        <?php while (have_posts()) : the_post(); ?>
+          <?php get_template_part('templates/content', 'project-teaser'); ?>
+        <?php endwhile; ?>
   			<div class="gridbreak">
   			</div>
   			<div class="gridbreak">

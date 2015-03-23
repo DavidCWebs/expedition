@@ -212,4 +212,53 @@ function carawebs_project_taxonomy() {
 // Hook into the 'init' action
 add_action( 'init', 'carawebs_project_taxonomy', 0 );
 
+/**
+ * Set up 'extra-content' CPT
+ *
+ *  @return void
+ *
+ */
+function carawebs_custom_post_type_extra_content() {
+	$labels = array(
+		'name'                => _x( 'Extra Content', 'Post Type General Name', 'text_domain' ),
+		'singular_name'       => _x( 'Extra Content', 'Post Type Singular Name', 'text_domain' ),
+		'menu_name'           => __( 'Extra Content', 'text_domain' ),
+		'parent_item_colon'   => __( 'Parent Extra Content:', 'text_domain' ),
+		'all_items'           => __( 'All Extra Content', 'text_domain' ),
+		'view_item'           => __( 'View Extra Content', 'text_domain' ),
+		'add_new_item'        => __( 'Add New Extra Content', 'text_domain' ),
+		'add_new'             => __( 'New Extra Content', 'text_domain' ),
+		'edit_item'           => __( 'Edit Extra Content', 'text_domain' ),
+		'update_item'         => __( 'Update Extra Content', 'text_domain' ),
+		'search_items'        => __( 'Search Extra Content', 'text_domain' ),
+		'not_found'           => __( 'No Extra Contents found', 'text_domain' ),
+		'not_found_in_trash'  => __( 'No Extra Contents found in Trash', 'text_domain' ),
+	);
+
+	$args = array(
+		'label'               => __( 'Extra Content', 'text_domain' ),
+		'description'         => __( 'Information pages that provide extra site content', 'text_domain' ),
+		'labels'              => $labels,
+		'supports'            => array( 'title', 'editor', 'excerpt', 'author', ),
+		'hierarchical'        => false,
+		'public'              => false,
+		'show_ui'             => true,
+		'show_in_menu'        => true,
+		'show_in_nav_menus'   => true,
+		'show_in_admin_bar'   => true,
+		'menu_position'       => 5,
+		'menu_icon'           => 'dashicons-admin-page',
+		'can_export'          => true,
+		'has_archive'         => true,
+		'exclude_from_search' => true,
+		'publicly_queryable'  => false,
+		'capability_type'     => 'post',
+	);
+
+	register_post_type( 'extra-content', $args );
+}
+
+// Hook into the 'init' action
+add_action( 'init', 'carawebs_custom_post_type_extra_content', 0 );
+
 ?>

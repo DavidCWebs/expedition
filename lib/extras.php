@@ -4,12 +4,81 @@ namespace Roots\Sage\Extras;
 
 use Roots\Sage\Config;
 
+function carawebs_people_query( $person_ID ) {
+
+  /*
+<div class="query_box quarter_box">
+    <a href="http://carawebstest.com/exp/person/andrew-weir/"><img src="http://carawebstest.com/exp/wp-content/uploads/2014/12/DSC05881.jpg" title="Andrew Weir"></a>
+    <h4 class="active">Andrew Weir</h4><h4 class="subheading">Director</h4>
+</div>
+   */
+  // WP_Query arguments
+  $args = array (
+  	'post_type'              => 'people',
+  	'posts_per_page'         => '-1',
+  	'order'                  => 'ASC',
+  	'orderby'                => 'date',
+  );
+
+  // The Query
+  $people_query = new \WP_Query( $args );
+
+  $return = '';
+
+  // The Loop
+  if ( $people_query->have_posts() ) {
+
+  	while ( $people_query->have_posts() ) {
+
+  		$people_query->the_post();
+
+      $permalink = get_the_permalink();
+      $current_ID = get_the_ID();
+      $title = get_the_title(); // Person's name
+      $image_url = get_field('headshot_image');
+      $job_title = get_field('job_title');
+      $active_class = $person_ID == $current_ID ? " class='active-heading'" : '';
+
+      $return.= "
+      <div class='query_box quarter_box'>
+          <a href='$permalink'><img src='$image_url' title='$title'></a>
+          <h4$active_class>$title</h4><h4 class='subheading'>$job_title</h4>
+      </div>
+      ";
+
+  	}
+
+  } else {
+
+    $return .= "There are no people registered";
+
+  }
+
+  // Restore original Post Data
+  wp_reset_postdata();
+
+  return $return;
+
+}
+
+/**
+ * Set additional body classes
+ *
+ * Hooked to the 'body_class' filter.
+ *
+ * @param  [type] $classes [description]
+ * @return string          Additional body classes.
+ *
+ */
 function carawebs_body_class($classes) {
 
   // Add post/page slug
   if (is_single() || is_page() || is_archive() && !is_front_page()) {
-    if (!in_array(basename(get_permalink()), $classes)) {
+
+    if ( !in_array(basename(get_permalink()), $classes) && !is_archive() ) {
+
       $classes[] = basename(get_permalink());
+
     }
 
     if( is_singular( 'project' ) ){
@@ -19,11 +88,42 @@ function carawebs_body_class($classes) {
 
     }
 
+    if( is_post_type_archive('people') ){
+
+      $classes[]  = 'people';
+
+    }
+
+    if( is_singular( 'people' ) ){
+
+      $classes[]  = 'person';
+
+    }
+
   }
+
   return $classes;
+
 }
 
 add_filter('body_class', 'Roots\Sage\Extras\carawebs_body_class');
+
+
+function carawebs_change_people_archive_query( $query ) {
+
+    if ( $query->is_main_query() && $query->is_post_type_archive('people')) {
+
+         $query->set( 'orderby', 'date' );
+         $query->set( 'order', 'ASC' );
+         $query->set( 'posts_per_page', '-1' );
+
+    }
+}
+
+add_action( 'pre_get_posts', 'Roots\Sage\Extras\carawebs_change_people_archive_query' );
+
+
+
 
 function carawebs_teaser_image( $page_ID, $size = 'full' ){
 
@@ -227,7 +327,7 @@ function carawebs_footer_layout(){
  */
 if( function_exists('acf_add_options_page') ) {
 
-	acf_add_options_page(array(
+	acf_add_options_page (array(
 		'page_title' 	=> 'Site Footer Settings & Content',
 		'menu_title'	=> 'Site Footer',
 		'menu_slug' 	=> 'site-footer-settings',
