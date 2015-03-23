@@ -101,6 +101,12 @@ function carawebs_body_class($classes) {
 
     }
 
+    if( is_post_type_archive('thinking') ){
+
+      $classes[]  = 'thinking';
+
+    }
+
   }
 
   return $classes;
@@ -110,20 +116,64 @@ function carawebs_body_class($classes) {
 add_filter('body_class', 'Roots\Sage\Extras\carawebs_body_class');
 
 
-function carawebs_change_people_archive_query( $query ) {
+function carawebs_change_archive_query( $query ) {
 
     if ( $query->is_main_query() && $query->is_post_type_archive('people')) {
 
          $query->set( 'orderby', 'date' );
          $query->set( 'order', 'ASC' );
-         $query->set( 'posts_per_page', '-1' );
+         return;
 
     }
+
+    if ( $query->is_main_query() && $query->is_post_type_archive('thinking') ) {
+
+        $query->set( 'orderby', 'date' );
+        $query->set( 'order', 'DESC' );
+        return;
+    }
+
 }
 
-add_action( 'pre_get_posts', 'Roots\Sage\Extras\carawebs_change_people_archive_query' );
+add_action( 'pre_get_posts', 'Roots\Sage\Extras\carawebs_change_archive_query', 999 );
 
 
+function limit_posts_per_archive_page() {
+
+	if ( is_post_type_archive('projects') || is_tax('project-category') || is_post_type_archive('people') ){
+
+		$limit = -1; // Show all projects on the project archive page or the project-category custom tax archive page
+
+  } elseif ( is_post_type_archive('thinking') ){
+
+		$limit = -1; // Show all projects on the project archive page or the project-category custom tax archive page
+
+    } elseif ( is_search() ) {
+
+		$limit = 10;
+
+  } else {
+
+		$limit = get_option('posts_per_page');
+
+  }
+
+	set_query_var( 'posts_per_archive_page', $limit );
+
+}
+add_filter('pre_get_posts', 'Roots\Sage\Extras\limit_posts_per_archive_page');
+
+function carawebs_amend_main_query() {
+
+	if ( is_post_type_archive('thinking') ){
+
+		$order = 'DESC';
+    set_query_var( 'order', $order );
+
+  }
+
+}
+add_filter('pre_get_posts', 'Roots\Sage\Extras\carawebs_amend_main_query');
 
 
 function carawebs_teaser_image( $page_ID, $size = 'full' ){
@@ -361,6 +411,8 @@ function carawebs_nav_encode_email( $atts, $item, $args ) {
  }
 
 add_filter( 'nav_menu_link_attributes', 'Roots\Sage\Extras\carawebs_nav_encode_email', 10, 3 );
+
+
 
 add_filter('pre_get_posts', 'Roots\Sage\Extras\query_post_type');
 
@@ -1156,13 +1208,13 @@ function carawebs_project_fields() {
 
 //add_action( 'pre_get_posts', 'Roots\Sage\Extras\carawebs_post_types_to_query' );
 
-function carawebs_post_types_to_query( $query ) {
+/*function carawebs_post_types_to_query( $query ) {
 
 	if ( ! is_admin() && ! is_home() && $query->is_main_query() )
 		$query->set( 'post_type', array( 'post', 'page', 'project', 'people', 'thinking' ) );
 	return $query;
 }
-
+*/
 
 /*==============================================================================
 	Home page link
