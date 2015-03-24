@@ -15,7 +15,9 @@ function title() {
 
   if (is_home()) {
 
-    if (get_option('page_for_posts', true)) {
+    return;
+
+    /*if (get_option('page_for_posts', true)) {
 
       return get_the_title(get_option('page_for_posts', true));
 
@@ -23,7 +25,7 @@ function title() {
 
       return __('Latest Posts', 'sage');
 
-    }
+    }*/
 
   } elseif ( is_archive() && !is_post_type_archive() && !is_tax() ) {
 

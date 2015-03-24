@@ -479,14 +479,16 @@ input #s.input_text {
 	display: inline-block;
 }
 
-.previous_posts a {
+.previous_posts a,
+.nav-next a {
 	padding-right: 40px;
-	background: url(../../images/expedition_website_right_arrow_white.png) 99% center no-repeat;
+	background: url(../../assets/images/expedition_website_right_arrow_white.png) 99% center no-repeat;
 }
 
-.next_posts a {
+.next_posts a,
+.nav-previous a {
 	padding-left: 40px;
-	background: url(../../images/expedition_website_left_arrow_white.png) 0 center no-repeat;
+	background: url(../../assets/images/expedition_website_left_arrow_white.png) 0 center no-repeat;
 }
 
 #linky {
@@ -1352,14 +1354,14 @@ body {
 }
 
 .project .post_content,
+.services .post_content,
 .project.single.template-single-project .post_content,
 .about .post_content {
 	padding: 0 20px 0 0;
 }
 
 .thinking .post_content,
-.contact .post_content,
-.services .post_content {
+.contact .post_content {
 	padding: 0;
 }
 
@@ -1458,11 +1460,13 @@ h2.person {
 	margin-bottom: 20px;
 }
 
-.search_results h1 {
+.search_results h1,
+.search-results h1 {
 	margin-bottom: 40px;
 }
 
-.search_results h2 {
+.search_results h2,
+.search-results h2 {
 	font-size: 16px;
 	line-height: 18px;
 	font-weight: bold;
@@ -2213,7 +2217,8 @@ a.go_top:hover {
 
 }
 
-.search_results .gridbreak {
+.search_results .gridbreak,
+.search-results .gridbreak {
 	content: '';
 	display: inline-block;
 	width: 31%;
@@ -2445,7 +2450,8 @@ a.go_top:hover {
 		width: 48%;
 	}
 
-	.search_results .gridbreak {
+	.search_results .gridbreak,
+	.search-results .gridbreak {
 		width: 48%;
 	}
 

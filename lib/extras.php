@@ -72,6 +72,12 @@ function carawebs_people_query( $person_ID ) {
  */
 function carawebs_body_class($classes) {
 
+  if( is_home() ){
+
+    $classes[]  = 'home';
+
+  }
+
   // Add post/page slug
   if (is_single() || is_page() || is_archive() && !is_front_page()) {
 
@@ -85,6 +91,12 @@ function carawebs_body_class($classes) {
 
       $classes[]  = 'project';
       $classes[]  = 'template-single-project';
+
+    }
+
+    if( is_search() ) {
+
+      $classes[]  = 'search_results';
 
     }
 
@@ -114,6 +126,36 @@ function carawebs_body_class($classes) {
 }
 
 add_filter('body_class', 'Roots\Sage\Extras\carawebs_body_class');
+
+function carawebs_next_previous_links( $args = array() ) {
+
+  $navigation = '';
+
+    // Don't print empty markup if there's only one page.
+    if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
+        $args = wp_parse_args( $args, array(
+            'prev_text'          => __( 'Older posts' ),
+            'next_text'          => __( 'Newer posts' ),
+            'screen_reader_text' => __( 'Posts navigation' ),
+        ) );
+
+        $next_link = get_previous_posts_link( $args['next_text'] );
+        $prev_link = get_next_posts_link( $args['prev_text'] );
+
+        if ( $prev_link ) {
+            $navigation .= '<div class="nav-previous left">' . $prev_link . '</div>';
+        }
+
+        if ( $next_link ) {
+            $navigation .= '<div class="nav-next right">' . $next_link . '</div>';
+        }
+
+        $navigation = _navigation_markup( $navigation, 'posts-navigation', $args['screen_reader_text'] );
+    }
+
+    return $navigation;
+
+}
 
 
 function carawebs_change_archive_query( $query ) {
@@ -368,6 +410,39 @@ function carawebs_footer_layout(){
   }
 
 }
+
+/* The Address block for Contact Page */
+
+function carawebs_address_block(){
+
+  ob_start();
+  ?>
+  <div id="address_block" itemscope itemtype="http://schema.org/Organization">
+    <div class="post_content" itemprop="address" itemscope itemtype="http://schema.org/PostalAddress">
+      <p>
+        <span itemprop="name">Expedition Engineering</span><br/>
+        <span itemprop="streetAddress"><?php the_field('address_line_1', 'option')?></span><br/>
+        <span itemprop="streetAddress"><?php the_field('address_line_2', 'option')?></span><br/>
+        <span itemprop="addressLocality"><?php the_field('town', 'option')?></span>,&nbsp;
+        <span itemprop="postalCode"><?php the_field('postcode', 'option')?></span>
+      </p>
+      <a href="https://mapsengine.google.com/map/edit?mid=z1R_6hsiZ01o.ktcJ5xDXiFbs" target="_blank" title="Click to open a Google Map of Expedition in a new browser tab">Google Maps</a></p>
+    </div>
+    <p>
+      <span itemprop="telephone"><span class="address_titles">Phone:</span><?php the_field('phone_number', 'option'); ?></span><br/>
+      <span itemprop="fax"><span class="address_titles">Fax:</span><?php the_field('fax_number', 'option'); ?></span><br/>
+      <span itemprop="email"><span class="address_titles">Email:</span><a href="mailto: <?php the_field('contact_email', 'option'); ?>"><?php the_field('contact_email', 'option'); ?></a></span>
+    </p>
+  </div>
+  <?php
+
+  $address = ob_get_clean();
+
+  return $address;
+
+}
+
+//add_action('hook_after_address_block','carawebs_address_block');
 
 /**
  * Set Up Options pages for ACF.
@@ -1101,12 +1176,12 @@ function cw_enqueue_masonry() {
 	if (is_home()) {
 
     // Register the control script - in a folder called js in the active Thesis skin
-    wp_register_script( 'masonry_control', THESIS_USER_SKIN_URL . '/js/masonry_control.js', array( 'jquery' ), null, true);
+    wp_register_script( 'masonry_control', get_template_directory_uri() . '/assets/scripts/vendor/masonry_control.js', array( 'jquery' ), null, true);
 
-	// Don't need to register masonry as it already has a WP handle - just enqueue it, and WP builds it into footer
-	wp_enqueue_script('jquery-masonry', '', array('jquery'), '', true);
+  	// Don't need to register masonry as it already has a WP handle - just enqueue it, and WP builds it into footer
+  	wp_enqueue_script('jquery-masonry', '', array('jquery'), '', true);
 
-	// Enqueue the masonry controls - they will be built into the footer
+  	// Enqueue the masonry controls - they will be built into the footer
     wp_enqueue_script('masonry_control', '', array('jquery'), '', true);
 
     }
@@ -1115,30 +1190,32 @@ function cw_enqueue_masonry() {
 // Bring link to masonry and control script through on front end
 add_action('wp_enqueue_scripts', 'Roots\Sage\Extras\cw_enqueue_masonry', 10, 0);
 
-/* Add CSS for masonry into head- this MUST be in head rather than in stylesheet
+/**
+ * Add CSS for masonry into head- this MUST be in head rather than in stylesheet.
  *
- * Define the masonry container as #linky. Masonry units as .boxy, .boxy2
+ * Define the masonry container as #linky. Masonry units as .boxy, .boxy2.
+ * Important to overtly define widths
  *
- * Important to define widths
- *
+ * @return string style to be echoed into head
  */
-
-
-function cw_masonry_css() {
+function carawebs_masonry_css() {
 
 	// Run on the front page (static page) only
 	if (is_home()) {
+
+    /*
+      @media only screen and (max-width:660px),
+      screen and (max-device-width:660px) {
+      #linky { width: 350px; }
+      .boxy { max-width: 100%; width:auto; height: auto; }
+      }
+    */
 		// change #linky from 350 to 100% line 62
 		echo '
 		<style type="text/css">
 			#linky { width:100%; }
 			#linky .boxy { width: 300px; }
 
-			/*@media only screen and (max-width:660px),
-				screen and (max-device-width:660px) {
-				#linky { width: 350px; }
-				.boxy { max-width: 100%; width:auto; height: auto; }
-				}*/
 			@media only screen and (max-width:340px),
 				screen and (max-device-width:340px) {
 				#linky { width:100%; }
@@ -1153,10 +1230,7 @@ function cw_masonry_css() {
 	}
 }
 
-// Add hook for front-end
-add_action('wp_head', 'Roots\Sage\Extras\cw_masonry_css');
-
-// End masonry setup
+add_action('wp_head', 'Roots\Sage\Extras\carawebs_masonry_css');
 
 /*==============================================================================
 	Force medium image crop
@@ -1321,11 +1395,7 @@ function carawebs_custom_excerpt() {
 	$trimmed = rtrim ( $str, ".,:;!?" );
 
 	// Echo to the page and add a Read More link
-	?><div class="post_content post_excerpt">
-
-		<p><?php echo $trimmed; ?>&hellip;<a class="readmore" href="<?php echo get_permalink();?>">Read More</a></p>
-
-	</div>
+	?><p><?php echo $trimmed; ?>&hellip;<a class="readmore" href="<?php echo get_permalink();?>">Read More</a></p>
 	<?php
 
 }
@@ -1645,7 +1715,7 @@ function tgm_soliloquy_custom_title_after_slider( $slider, $id, $images, $solilo
 /*====================================================================*/
 
 /***ADD ABOUT IMAGES****/
-function carawebs_about_images() {
+function carawebs_about_images( $size = 'full') {
 
 if(get_field('extra_images')):
 
@@ -1656,7 +1726,7 @@ if(get_field('extra_images')):
 	?><div class="box<?php echo ( $i > 2 ) ? ' topspace' : '' ;?>"><?php
 
 	$attachment_id = get_sub_field('about_image');
-	$size = "medium"; // (thumbnail, medium, large, full or custom size)
+	//$size = "medium"; // (thumbnail, medium, large, full or custom size)
  	$image = wp_get_attachment_image_src( $attachment_id, $size );
 
 		// url = $image[0];
@@ -2462,31 +2532,6 @@ function carawebs_social_sharing(){
 //add_action('hook_after_social_sharing','carawebs_social_sharing');
 
 /*====================================================================*/
-
-/* The Address block for Contact Page */
-
-function carawebs_address_block(){
-
-	echo '
-	<div id="address_block">
-	<div class="post_content">
-	<p>Expedition Engineering<br>
-	Morley House<br>
-	1st Floor<br>
-	320 Regent Street<br>
-	London, W1B 3BB</p>
-	<p><a href="https://mapsengine.google.com/map/edit?mid=z1R_6hsiZ01o.ktcJ5xDXiFbs" target="_blank" title="Click to open a Google Map of Expedition in a new browser tab">Google Maps</a></p>
-	</div>';
-
-	?>
-	<p><span class="address_titles">Phone:</span><span class="address_content">+44 (0)20 7307 8880</span><br>
-	<span class="address_titles">Fax:</span>+44(0)20 7307 1001<br>
-	<span class="address_titles">Email:</span><a href="mailto:<?php echo antispambot('info@expedition.uk.com');?>"><?php echo antispambot('info@expedition.uk.com');?></a></p>
-	</div><?php
-
-}
-
-//add_action('hook_after_address_block','carawebs_address_block');
 
 /*====================================================================*/
 
