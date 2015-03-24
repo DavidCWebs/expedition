@@ -2675,12 +2675,21 @@ function namespace_menu_classes( $classes , $item ){
 	return $classes;
 }
 */
-/*==============================================================================
-	Menu adjustment for CPTs - stops "Blog" page being highlighed by means of active class
-==============================================================================*/
 
-add_filter( 'nav_menu_css_class', 'Roots\Sage\Extras\carawebs_menu_classes', 11, 3 );
-
+/**
+ * Sort out menu li classes for Custom Post Types.
+ *
+ * Menu adjustment for CPTs - stops "Blog" page being highlighed by means of active class.
+ * This nearly did my head in because a Sage class is also hooking into the 'nav_menu_css_class'.
+ * Hook this at 11, NOT 10. $hours_wasted = 2.
+ *
+ * @param  [type] $classes [description]
+ * @param  [type] $items   [description]
+ * @param  [type] $args    [description]
+ * @return [type]          [description]
+ * @see     Roots\Sage\Nav\SageNavWalker()
+ *
+ */
 function carawebs_menu_classes( $classes, $items, $args ){
 
     //  || is_post_type_archive('projects') || is_singular( 'people') || is_post_type_archive('people') || is_tax('project-category')*/ )){
@@ -2694,14 +2703,36 @@ function carawebs_menu_classes( $classes, $items, $args ){
         $classes = str_replace( 'menu-projects', 'menu-projects active', $classes);
 
       }
-     //$classes[] = 'balls';
 
+    if ( is_post_type_archive('people') || is_singular( 'people') ){
+
+        $classes = str_replace( 'menu-people', 'menu-people active', $classes);
+
+      }
+    if ( is_post_type_archive('thinking') || is_singular( 'thinking') ){
+
+        $classes = str_replace( 'menu-thinking', 'menu-thinking active', $classes);
+
+      }
+     //$classes[] = 'balls';
     }
 
 
   return $classes;
 
 }
+
+add_filter( 'nav_menu_css_class', 'Roots\Sage\Extras\carawebs_menu_classes', 11, 3 );
+
+/**
+ * For the brave souls who get this far: You are the chosen ones,
+ * the valiant knights of programming who toil away, without rest,
+ * fixing our most awful code. To you, true saviors, kings of men,
+ * I say this: never gonna give you up, never gonna let you down,
+ * never gonna run around and desert you. Never gonna make you cry,
+ * never gonna say goodbye. Never gonna tell a lie and hurt you.
+ */
+
 
 /* Additional Clearfix Element */
 
