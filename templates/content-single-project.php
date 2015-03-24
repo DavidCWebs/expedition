@@ -5,8 +5,8 @@ while (have_posts()) : the_post(); ?>
     <div id="content" class="page_wrapper page_background">
 		<div class="columns_312">
 			<div id="project_text" class="third">
-				<div id="post-593" class="post_box test-test top" itemscope itemtype="http://schema.org/Article">
-          <?php Extras\carawebs_back_to_category(); ?>
+				<div id="post-<?php echo get_the_ID(); ?>" class="post_box test-test top" itemscope itemtype="http://schema.org/Article">
+          <?php Extras\carawebs_back_to_post_archive(); ?>
           <div class="post_content" itemprop="articleBody">
             <?php the_content(); ?>
 					</div>

@@ -10,8 +10,7 @@ while (have_posts()) : the_post(); ?>
             </div>
         </div>
         <div class="two_thirds">
-            <!-- featured image -->
-            <img width="987" height="460" src="http://carawebstest.com/exp/wp-content/uploads/2014/01/55-baker-street-expedition-engineering-12.jpg" class="attachment-full wp-post-image" alt="55-baker-street-expedition-engineering-12">
+            <?php Extras\carawebs_featured_image( 'full', 'attachment-full wp-post-image' ); ?>
             <div id="grid" class="padding_top">
               <?php Extras\carawebs_about_images( 'thumbnail' ); ?>
             </div>

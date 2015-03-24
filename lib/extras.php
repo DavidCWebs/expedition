@@ -119,6 +119,12 @@ function carawebs_body_class($classes) {
 
     }
 
+    if( is_singular('thinking') ){
+
+      $classes[]  = 'thinking_single';
+
+    }
+
   }
 
   return $classes;
@@ -489,11 +495,11 @@ add_filter( 'nav_menu_link_attributes', 'Roots\Sage\Extras\carawebs_nav_encode_e
 
 
 
-add_filter('pre_get_posts', 'Roots\Sage\Extras\query_post_type');
+add_filter('pre_get_posts', 'Roots\Sage\Extras\carawebs_query_post_type');
 
-function query_post_type($query) {
+function carawebs_query_post_type($query) {
 
-  if(is_category() || is_tag()) {
+  if( is_category() || is_tag() ) {
 
     $post_type = get_query_var('post_type');
 
@@ -502,9 +508,10 @@ function query_post_type($query) {
 	    $post_type = $post_type;
 
       }
-	  else{
 
-	    $post_type = array( 'post','project', 'nav_menu_item' ); // replace cpt to your custom post type
+	  else {
+
+	    $post_type = array( 'post','project', 'nav_menu_item' );
 
       }
 
@@ -840,7 +847,7 @@ function carawebs_project_slider() {
 
                     // ACF image field outputs attachment ID
                     $attachment_id = get_sub_field('image');
-                    $size = 'full'; // (thumbnail, medium, large, full or custom size)
+                    $size = 'medium'; // (thumbnail, medium, large, full or custom size)
                     $image = wp_get_attachment_image_src( $attachment_id, $size );
 
 										//echo "<pre>";
@@ -866,7 +873,7 @@ function carawebs_project_slider() {
                   <!--Dummy End Slide-->
                   <div class = "item">
                           <div class = "inner">
-                            <img class="no-fouc dummy-slide" src="<?php echo THESIS_USER_SKIN_URL . '/images/blank-slide-full-width.png'; ?>"/>
+                            <img class="no-fouc dummy-slide" src="<?php echo get_template_directory_uri() . '/assets/images/blank-slide-full-width.png'; ?>"/>
                           </div>
                   </div>
                 </div>
@@ -1388,15 +1395,32 @@ add_filter('get_the_excerpt', 'Roots\Sage\Extras\carawebs_trim_all_excerpt');
 
 
 
-function carawebs_custom_excerpt() {
+function carawebs_custom_excerpt( $hellip = '', $readmore = true ) {
 
 	$str = get_the_excerpt();
+  $link = get_the_permalink();
 
 	$trimmed = rtrim ( $str, ".,:;!?" );
 
-	// Echo to the page and add a Read More link
-	?><p><?php echo $trimmed; ?>&hellip;<a class="readmore" href="<?php echo get_permalink();?>">Read More</a></p>
-	<?php
+	// No Hellip
+	if( '' === $hellip && true === $readmore ){
+
+	   echo "<p>{$trimmed}&nbsp;<a class='readmore' href='$link'>Read More&nbsp;&raquo;</a></p>";
+
+  }
+
+  if( 'hellip' === $hellip && true === $readmore ){
+
+	   echo "<p>{$trimmed}&hellip;&nbsp;<a class='readmore' href='$link'>Read More&nbsp;&raquo;</a></p>";
+
+  }
+
+  if( 'hellip' === $hellip && false === $readmore ){
+
+	   echo "<p>{$trimmed}&hellip;</p>";
+
+  }
+
 
 }
 
@@ -1909,6 +1933,24 @@ function carawebs_back_to_category() {
 
 }
 
+function carawebs_back_to_post_archive() {
+
+  $post_type = get_post_type();
+
+  if ( $post_type ) {
+
+      $post_type_data = get_post_type_object( $post_type );
+      $post_type_slug = $post_type_data->rewrite['slug'];
+
+  }
+
+  $archive_url = esc_url( home_url( '/' . $post_type_slug ) );
+  $post_type_text = ucfirst( $post_type_slug );
+
+  echo "<p class='paramove'><a class ='category_link' href='$archive_url'>Back to $post_type_text</a></p>";
+
+}
+
 //add_action('hook_after_back_to_category', 'carawebs_back_to_category');
 
 /*====================================================================*/
@@ -1944,11 +1986,13 @@ function carawebs_add_custom_taxonomies() {
 }
 //add_action( 'init', 'carawebs_add_custom_taxonomies', 0 );
 
-/*====================================================================*/
 
-/* Extra Images on single post */
-
-/***ADD ABOUT IMAGES****/
+/**
+ * Extra Images on single post
+ *
+ * @return string HTML image markup
+ *
+ */
 function carawebs_post_images() {
 
 if(get_field('extra_images')):
@@ -2529,6 +2573,15 @@ function carawebs_social_sharing(){
 	<?php
 }
 
+function carawebs_link_page_for_posts() {
+
+  $page_for_posts = get_option( 'page_for_posts' );
+  $link = get_the_permalink( $page_for_posts );
+  return $link;
+
+}
+
+
 //add_action('hook_after_social_sharing','carawebs_social_sharing');
 
 /*====================================================================*/
@@ -2597,7 +2650,7 @@ add_filter('widget_text', 'do_shortcode');
 
 /* Menu adjustment for CPTs */
 
-
+/*
 add_filter( 'nav_menu_css_class', 'Roots\Sage\Extras\namespace_menu_classes', 10, 2 );
 
 function namespace_menu_classes( $classes , $item ){
@@ -2611,6 +2664,7 @@ function namespace_menu_classes( $classes , $item ){
 
 		// remove that unwanted classes if it's found
 		$classes = str_replace( 'current_page_parent', '', $classes );
+    $classes = str_replace( 'active menu-home', '', $classes );
 
 		// find the url you want and add the class you want
 		if ( $item->url == '/events' ) {
@@ -2620,8 +2674,34 @@ function namespace_menu_classes( $classes , $item ){
 	}
 	return $classes;
 }
+*/
+/*==============================================================================
+	Menu adjustment for CPTs - stops "Blog" page being highlighed by means of active class
+==============================================================================*/
 
-/*====================================================================*/
+add_filter( 'nav_menu_css_class', 'Roots\Sage\Extras\carawebs_menu_classes', 11, 3 );
+
+function carawebs_menu_classes( $classes, $items, $args ){
+
+    //  || is_post_type_archive('projects') || is_singular( 'people') || is_post_type_archive('people') || is_tax('project-category')*/ )){
+    if ( is_singular( array ( 'thinking', 'project', 'people' ) ) || is_search() || is_post_type_archive( array ('thinking', 'project', 'people') ) ) {
+
+    // remove unwanted active class if it's found
+    $classes = str_replace( 'active', '', $classes );
+
+    if ( is_post_type_archive('project') || is_singular( 'project') || is_tax('project-category') ){
+
+        $classes = str_replace( 'menu-projects', 'menu-projects active', $classes);
+
+      }
+     //$classes[] = 'balls';
+
+    }
+
+
+  return $classes;
+
+}
 
 /* Additional Clearfix Element */
 

@@ -9,7 +9,12 @@ if (!have_posts()) : ?>
     <div class="columns_1">
         <div class="third">
             <h1 class="archive_title headline">Thinking</h1>
-            <div class="post_content"><p>CONTENT</p>
+            <div class="post_content">
+              <?php
+              $post_id = 3143;
+                $post_object = get_post( $post_id );
+                echo apply_filters( 'the_content', $post_object->post_content );
+              ?>
             </div>
         </div>
     </div>

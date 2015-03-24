@@ -9,7 +9,6 @@ use Roots\Sage\Extras;
   </div>
   <?php get_search_form(); ?>
 <?php endif; ?>
-
 <div id="content" class="page_wrapper page_background">
 	<div id="linky">
 		<div id="twitter_container" class="boxy">
@@ -19,13 +18,5 @@ use Roots\Sage\Extras;
       <?php get_template_part('templates/content', 'news-teaser'); ?>
     <?php endwhile; ?>
 	</div>
-	<div class="text_box">
-		<div class="go_top" style="width: 940px;">
-  <a href="#" title="Go to the top of the page">Back to Top</a>
 </div>
-	</div>
-</div>
-
-
-
 <?php the_posts_navigation(); ?>
