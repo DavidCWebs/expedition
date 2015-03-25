@@ -211,7 +211,13 @@ function limit_posts_per_archive_page() {
 }
 add_filter('pre_get_posts', 'Roots\Sage\Extras\limit_posts_per_archive_page');
 
-function carawebs_amend_main_query() {
+/**
+ * Amend main query for 'thinking' Archive
+ *
+ * @return void
+ *
+ */
+function carawebs_amend_main_query_thinking() {
 
 	if ( is_post_type_archive('thinking') ){
 
@@ -221,7 +227,8 @@ function carawebs_amend_main_query() {
   }
 
 }
-add_filter('pre_get_posts', 'Roots\Sage\Extras\carawebs_amend_main_query');
+
+add_filter('pre_get_posts', 'Roots\Sage\Extras\carawebs_amend_main_query_thinking');
 
 
 function carawebs_teaser_image( $page_ID, $size = 'full' ){
@@ -609,6 +616,85 @@ EOF;
 
 }
 
+/**
+ * Frontpage showcased projects/thinking articles
+ *
+ * @param  int    The page ID
+ * @return string HTML to build teasers
+ */
+function carawebs_minor_teasers_front_page( $page_ID ){
+
+  $stages = get_post_meta( $page_ID, 'minor_featured_articles', true );
+
+  $teasers = '';
+
+  if( $stages ) {
+      for( $i = 0; $i < 5; $i++ ) {
+
+        $article_ID = esc_html( get_post_meta( get_the_ID(), 'minor_featured_articles_' . $i . '_article', true ) );
+
+        //$orient_class = 0 == $i ? 'half left' : 'half right';
+
+        $permalink = get_the_permalink( $article_ID );
+        $article_title = get_the_title( $article_ID );
+        $image_array = carawebs_teaser_image( $article_ID, 'carawebs_frontpage_thumbnail' );
+        $image_url = $image_array[0];
+        $thumb_ID = get_post_thumbnail_id( $article_ID );
+        $alt = get_post_meta( $thumb_ID, '_wp_attachment_image_alt', true );
+        $alt = !empty( $alt) ? 'alt="' . $alt . '"' : '';
+        $post_type = get_post_type( $article_ID );
+        $golarge_class = $i === 1 || $i === 4 ? ' golarge' : '';
+        $date = get_the_date( 'd/m/y', $article_ID );
+
+        if ( 'project' == $post_type ){
+
+          $container_class = "overlay_container";
+          $excerpt_div = '';
+          $overlay_background = '';
+
+          $teasers .= <<<EOF
+          <div class="query_box teaser overlay_container margin_top post-$article_ID project type-project status-publish{$golarge_class}">
+              <a class="featured_image_link" href="$permalink">
+                  <img width="{$image_array[1]}" height="{$image_array[2]}" src="$image_url" class="aligncenter wp-post-image" $alt />
+              </a>
+              <div class="overlay">
+                  <h2 class="headline overlay_headline"><a href="$permalink" rel="bookmark">$article_title</a></h2>
+                  <div class="post_content post_excerpt overlay_excerpt">
+                      <p>Expedition are the engineers behind the award-winning London 2012 Olympic Velodrome.</p>
+                  </div>
+                  <p><a class="read_more" href="$permalink">Read More</a></p>
+              </div>
+          </div>
+EOF;
+
+      } elseif ( 'post' == $post_type ){
+
+        $teasers .= <<<EOF
+        <div class="query_box teaser visible_overlay_container margin_top{$golarge_class}">
+            <div class="excerpt_overlay_background"></div>
+            <div class="headline_container">
+                <h2 class="headline overlay_headline">$article_title - $date</h2>
+            </div>
+            <div class="visible_excerpt">
+                <div class="post_content post_excerpt">
+                </div>
+            </div>
+            <a class="featured_image_link" href="$permalink">
+            <img width="{$image_array[1]}" height="{$image_array[2]}" src="$image_url" class="aligncenter wp-post-image" $alt />
+            </a>
+        </div>
+EOF;
+
+    }
+
+    }
+
+      return $teasers;
+
+    }
+
+}
+
 function return_ID( $page_ID){
 
   return $page_ID;
@@ -690,63 +776,43 @@ function carawebs_category_description() {
 
 //add_action('hook_after_category_intro', 'carawebs_category_description');
 
-/*==============================================================================
-  Detect Phones, not tablets
-==============================================================================*/
-/*
-function carawebs_is_phone() {
-	$useragent=$_SERVER['HTTP_USER_AGENT'];
-	if(preg_match('/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows (ce|phone)|xda|xiino/i',$useragent)||preg_match('/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i',substr($useragent,0,4))){
-    return true;
-  } else {
-	   return false;
-   }
-   return false;
-}
-*/
-/*==============================================================================
-  Front Page Flexslider
-  ============================================================================*/
 
+/**
+ * Front page image slider.
+ *
+ * Build the slider markup for a flexslider.
+ *
+ * @return string HTML slider markup
+ *
+ */
 function carawebs_frontpage_slider() {
 
    $slider_images = get_field('slider_images');
 
-   if(!empty($slider_images) ){ // run if the repeater field has content
+   if( !empty($slider_images) ){
 
     ?><div id="slider" class="flexslider">
-        <ul class="slides"><?php
+        <ul class="slides">
+          <?php
 
-        while( has_sub_field('slider_images') ){
+          while( has_sub_field('slider_images') ){
 
-            // ACF image field outputs attachment ID
-            $attachment_id = get_sub_field('image');
-            $size = "large"; // (thumbnail, medium, large, full or custom size)
-            $image = wp_get_attachment_image_src( $attachment_id, $size );
+              $attachment_id = get_sub_field('image');
+              $size = "large"; // (thumbnail, medium, large, full or custom size)
+              $image = wp_get_attachment_image_src( $attachment_id, $size );
+              $title = get_the_title( $attachment_id );
 
-              ?>
-                    <li>
-											<?php
+                echo "<li><img src='$image[0]' title='$title'/></li>";
 
-											echo "<img src='$image[0]' title='title'/>";
-
-											?>
-                        <!--<img src="<?php echo $image[0]; ?>" />-->
-                    </li>
-                <?php
-
-          } // End the while loop
-
-					// If the last image < 620px, add some extra padding
+            }
 
       ?></ul>
-    </div><!-- /#slider --><?php
+    </div>
+    <?php
 
     }
 
 }
-
-//add_action('hook_bottom_frontpage_slider', 'carawebs_frontpage_slider');
 
 /*==============================================================================
   Detect Phones, not tablets
